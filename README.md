@@ -1,1 +1,1 @@
-CanteenIQ project by Ekyom Kaur
+CanteenIQ project by Ekyom Kaur, PMS Alwal
