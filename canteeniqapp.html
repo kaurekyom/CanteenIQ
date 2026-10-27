@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CanteenIQ</title>
+<style>
+:root{--bg:#faf6ec;--ink:#2b302c;--muted:#566059;--line:#e3dccb;--lav:#dbe9dd;--mint:#cfe8d3;--peach:#ffe2c2;--sky:#e2eee6;--rose:#ffd3ad;--lemon:#fcefc9;--ac:#2f6b45;--or:#c85f0a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI",system-ui,sans-serif;line-height:1.45}
+h2{font-size:1.2rem;margin:0 0 .5rem}h3{margin:0 0 .3rem;font-size:1.05rem}
+.wrap{max-width:1150px;margin:0 auto;padding:1rem}.banner{background:var(--lemon);text-align:center;padding:.4rem;font-size:.85rem}
+.top{display:flex;flex-wrap:wrap;gap:.7rem;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.brand{font-size:1.6rem;font-weight:700;color:var(--ac)}.brand small{display:block;font-size:.75rem;font-weight:400;color:var(--muted)}
+nav,.row{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center}.between{justify-content:space-between}
+button,select,input{font:inherit;color:inherit}button{border:0;border-radius:999px;padding:.4rem .9rem;background:var(--lav);cursor:pointer}
+button:disabled{opacity:.45;cursor:not-allowed}button.on,button.go{background:var(--ac);color:#fff}button.warn{background:var(--rose)}button.sm{padding:.15rem .65rem;font-size:.85rem}
+input,select{border:1px solid var(--line);border-radius:12px;padding:.35rem .6rem;background:#fff;max-width:100%}input[type=number]{width:5rem}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:1rem;box-shadow:0 2px 10px #2f6b4518;margin-bottom:1rem}
+.grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}.grid .card{margin:0}
+.layout{display:grid;gap:1rem;grid-template-columns:2fr 1fr}@media(max-width:800px){.layout{grid-template-columns:1fr}}
+.emoji{font-size:2rem;border-radius:14px;display:inline-block;padding:.25rem .55rem;margin-bottom:.3rem}
+.Snacks .emoji{background:var(--peach)}.Meals .emoji{background:var(--mint)}.Beverages .emoji{background:var(--sky)}
+.muted{color:var(--muted);font-size:.88rem}.pill{border-radius:999px;padding:.1rem .6rem;font-size:.8rem;display:inline-block}
+.Placed{background:var(--lemon)}.Preparing{background:var(--peach)}.Ready{background:var(--mint)}.Completed{background:var(--sky)}
+.bad{background:var(--rose)}.ok{background:var(--mint)}.mid{background:var(--lemon)}
+.msg{padding:.6rem .9rem;border-radius:12px;margin-bottom:.8rem}.msg.err{background:var(--rose)}.msg.good{background:var(--mint)}
+.stats{display:grid;gap:.8rem;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));margin-bottom:1rem}.stats .card{margin:0}.stats b{display:block;font-size:1.5rem}
+.tw{overflow-x:auto;max-height:420px}table{border-collapse:collapse;width:100%;font-size:.88rem}th,td{padding:.35rem .55rem;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+th{position:sticky;top:0;background:#fff}.two{display:grid;gap:1rem;grid-template-columns:1fr 1fr}@media(max-width:800px){.two{grid-template-columns:1fr}}
+.box{background:var(--bg);border-radius:12px;padding:.6rem .9rem}
+.sch{display:block;font-size:.8rem;font-weight:600;color:var(--or);letter-spacing:.04em;text-transform:uppercase}
+.hero{max-width:720px;margin:6vh auto;text-align:center;padding:2rem}.hero h1{font-size:2.6rem;margin:.3rem 0;color:var(--ac)}.sub{font-size:1.1rem;margin:0 0 1rem}
+.ctl{display:block;margin-bottom:.6rem}.ctl select,.ctl input[type=number]{width:100%}.ctl input[type=range]{width:100%;accent-color:var(--ac)}
+.warnbox{background:var(--rose);border-left:5px solid var(--or);border-radius:10px;padding:.6rem .9rem;margin:.6rem 0}
+.good{color:var(--ac);font-weight:600}.bad2{color:var(--or);font-weight:600}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--or);outline-offset:2px}
+body.pres{font-size:1.12rem}
+@media print{.noprint,.msg,button{display:none!important}body{background:#fff}.card{box-shadow:none;break-inside:avoid}}
+.modal{position:fixed;inset:0;background:#2b302c99;display:flex;align-items:center;justify-content:center;z-index:50;padding:1rem}.modal .card{max-width:400px;width:100%;margin:0}
+.banner{position:sticky;top:0;z-index:30;background:#fff1c9;border-bottom:3px solid var(--or);color:#2b302c;font-weight:600;padding:.6rem 1rem;font-size:.95rem;line-height:1.35}
+.top{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.7rem;align-items:start;margin-bottom:.8rem}
+.seg{display:flex;border:2px solid var(--ac);border-radius:999px;overflow:hidden;background:#fff;justify-self:end}
+.seg button{border-radius:0;background:#fff;color:var(--ac);font-weight:600;padding:.5rem 1rem;white-space:nowrap}
+.seg button.act{background:var(--ac);color:#fff}
+.tabs{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;margin-bottom:1rem}
+@media(max-width:520px){.seg button{padding:.4rem .6rem;font-size:.82rem}.brand{font-size:1.25rem}.banner{font-size:.86rem;padding:.5rem .7rem}}
+.cal{margin:.4rem 0}.calgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;text-align:center;margin-top:.3rem}.calgrid small{color:var(--muted);font-weight:600}
+.day{border-radius:10px;padding:.3rem 0;min-height:2.3rem;min-width:0;background:#fff;border:1px solid var(--line)}
+.day.today{border-color:var(--or);box-shadow:inset 0 0 0 1px var(--or)}.day.sel{background:var(--ac);color:#fff;border-color:var(--ac);font-weight:700}
+.day:disabled{background:#f0ece0;color:#8d8873;text-decoration:line-through}
+.oos{opacity:.65}.oos .emoji{filter:grayscale(1)}.stk-in{background:var(--mint)}.stk-out{background:var(--rose);color:#7a3600}
+</style></head><body>
+<div class="banner" role="note">Demonstration system: simulated data, no real payments. A student project, not an official school system. Data is saved only in this browser on this computer</div>
+<div class="wrap" id="app"></div>
+<script>
+"use strict";
+const DAYS=["Mon","Tue","Wed","Thu","Fri"],KEY="canteeniq-html-v1";
+const MENU0=[
+{id:"chocolate",name:"Chocolate",desc:"Milk chocolate bar (demonstration item)",price:10,cat:"Snacks",emoji:"🍫",prep:30},
+{id:"samosa",name:"Veg Samosa",desc:"Crispy potato and pea filling",price:15,cat:"Snacks",emoji:"🥟",prep:0},
+{id:"sandwich",name:"Cheese Sandwich",desc:"Toasted, with mint chutney",price:30,cat:"Snacks",emoji:"🥪",prep:0},
+{id:"pulao",name:"Veg Pulao Bowl",desc:"Rice, vegetables and raita",price:50,cat:"Meals",emoji:"🍚",prep:0},
+{id:"juice",name:"Fresh Fruit Juice",desc:"Seasonal fruit, no added sugar",price:25,cat:"Beverages",emoji:"🧃",prep:0},
+{id:"cookie",name:"Millet Cookies",desc:"Pack of two, baked",price:20,cat:"Snacks",emoji:"🍪",prep:0}];
+// FICTIONAL hand-written data. 15 history sessions (3 weeks Mon-Fri); index 14 = Sports Day event.
+const HD={samosa:[30,26,24,28,40,32,25,23,30,42,29,27,25,27,52],sandwich:[22,25,21,20,28,24,23,22,21,27,23,26,20,22,33],
+pulao:[35,30,33,31,38,36,31,32,30,37,34,32,31,33,45],juice:[18,20,22,25,30,19,21,23,24,31,20,22,21,26,38],cookie:[12,14,13,15,18,13,12,14,16,17,14,13,15,14,24]};
+// Separate labelled TEST week, never used to train the forecast (cookies Wednesday is a deliberate surprise)
+const TD={samosa:[31,27,24,29,41],sandwich:[24,24,22,21,29],pulao:[36,30,34,32,39],juice:[21,22,22,27,31],cookie:[13,15,22,16,19]};
+const FIX={samosa:35,sandwich:28,pulao:40,juice:28,cookie:18};
+const SLOTS=["Short break (9:50–10:00 am)","Lunch break (1:00–1:30 pm)"];
+const dt=i=>new Date(Date.UTC(2026,8,7+Math.floor(i/5)*7+i%5)).toISOString().slice(0,10);
+function mk(t,off,evs,rate){const r=[];for(const id in t)t[id].forEach((d,i)=>{const p=FIX[id],u=Math.max(0,p-d);r.push({date:dt(off+i),day:DAYS[i%5],id,prep:p,dem:d,disc:Math.round(u*rate),est:true,ev:evs.includes(off+i),type:evs.includes(off+i)?"event":"normal"})});return r}
+const pad=n=>String(n).padStart(2,"0");
+function isoOf(d){return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`}
+function todayISO(){return isoOf(new Date())}
+function maxISO(){const n=new Date(),nm=new Date(n.getFullYear(),n.getMonth()+1,1),last=new Date(nm.getFullYear(),nm.getMonth()+1,0).getDate();return isoOf(new Date(nm.getFullYear(),nm.getMonth(),Math.min(n.getDate(),last)))} /* same day next month, clamped to month end */
+function freshMenu(){return MENU0.map(m=>({...m,stock:m.prep,on:true}))}
+function fresh(){return{menu:freshMenu(),hist:mk(HD,0,[14],.6),test:mk(TD,15,[],.6),orders:[],
+role:"student",pin:"1234",menuVer:2,cfg:{classes:["VI","VII","VIII","IX","X","XI","XII"],sections:["A","B","C","D"]},cls:"",sec:"",od:todayISO(),cal:null,last:null,plan:{...FIX},intro:true,pres:false,dtype:"normal",fm:{method:"hybrid",k:3,dayOnly:true,buf:5},adj:{exam:0,short:0,event:0},sim:{id:"samosa",day:"Mon",type:"normal",att:100,adj:0,base:35,prep:35,cost:12,budget:500},set:{minItem:1.5,perOrder:1,disc:.6,cost:12,co2:0},date:"2026-10-05",next:1001,ev:false,tab:"student",cart:{},msg:null,cat:"All",q:"",nm:"",sl:"",fi:"samosa",fd:"Mon",pd:"Mon",lk:""}}
+let S,saveFail=false,loadWarn="";
+try{const raw=localStorage.getItem(KEY),p=raw?JSON.parse(raw):null;if(p&&(!Array.isArray(p.hist)||!Array.isArray(p.menu)||!Array.isArray(p.orders)))throw new Error("bad");S=Object.assign(fresh(),p||{});
+ if(p&&p.menuVer!==2){S.menu=freshMenu();S.menuVer=2;S.msg={k:"good",t:"Demonstration menu applied once: Chocolate is in stock and every other item is out of stock. Your history and settings were kept. Change this in Authority View > Staff."}}
+ S.orders.forEach(o=>{if(!o.odate)o.odate=todayISO()});if(!S.cfg||!Array.isArray(S.cfg.classes)||!Array.isArray(S.cfg.sections))S.cfg=fresh().cfg}
+catch(e){loadWarn="Saved data could not be read, so sample data was loaded. A backup copy of the unreadable data was kept in this browser.";try{localStorage.setItem(KEY+"-backup",localStorage.getItem(KEY)||"")}catch(_){}S=fresh()}
+const $=i=>document.getElementById(i),esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const mean=a=>a.length?a.reduce((s,x)=>s+x,0)/a.length:0,sdev=a=>{if(a.length<2)return 0;const m=mean(a);return Math.sqrt(a.reduce((s,x)=>s+(x-m)**2,0)/(a.length-1))};
+const dayOf=iso=>DAYS[(new Date(iso+"T00:00:00Z").getUTCDay()+6)%7]||"Mon";
+const nw=iso=>{const d=new Date(iso+"T00:00:00Z");do d.setUTCDate(d.getUTCDate()+1);while(d.getUTCDay()%6===0);return d.toISOString().slice(0,10)};
+const nameOf=id=>S.menu.find(m=>m.id===id).name;
+
+/* FORECASTING: deterministic (same data + settings -> same number). Only NORMAL days feed the averages. */
+const MN={avg:"A. Simple average",ma:"B. Moving average",wma:"C. Weighted moving average",hybrid:"CanteenIQ hybrid (weekday + moving average)"};
+const MEXP={avg:"Average of all chosen past values. Simple and steady, but slow to notice a new trend.",ma:"Average of only the last k values, so it follows recent changes.",wma:"Like B, but newer values count more (weights 1, 2, 3 … k; newest has the largest weight).",hybrid:"Average of the same-weekday average and the last-3 moving average (the original CanteenIQ method)."};
+const DTYPES=[["normal","Normal school day"],["exam","Examination day"],["short","Shortened / holiday-adjusted day"],["event","Special event (sports day, function, festival)"]];
+const tr=r=>S.hist.filter(x=>x.date<r.date); /* training rows: strictly BEFORE the evaluated date */
+function dayAdj(h,id,type){ /* applied exactly once per forecast: data-based ratio if past rows exist, else manual % */
+ if(type==="normal")return{k:1,txt:"Normal day: no day-type adjustment."};
+ const rows=h.filter(x=>x.id===id&&x.ev&&(x.type||"event")===type),nm=h.filter(x=>x.id===id&&!x.ev),
+  mn=mean(rows.map(e=>{const q=nm.filter(x=>x.day===e.day);return mean((q.length?q:nm).map(x=>x.dem))})); /* compare each event day with normal days of the SAME weekday, so the weekday effect is not counted twice */
+ if(rows.length&&mn>0)return{k:mean(rows.map(x=>x.dem))/mn,txt:`Day-type adjustment from ${rows.length} past ${type} row(s): few samples, unreliable.`};
+ const pc=(S.adj&&+S.adj[type])||0;return{k:1+pc/100,txt:`No past ${type} data, so your manual adjustment (${pc}%) is used.`}}
+function fc(h,id,day,type,on=true,o){
+ o=o||S.fm;type=type===true?"event":(type||"normal");
+ const rows=h.filter(x=>x.id===id&&Number.isFinite(x.dem)&&x.dem>=0).sort((a,b)=>a.date<b.date?-1:1),nm=rows.filter(x=>!x.ev),none=(v,m,st)=>({v,lo:v,hi:v,n:rows.length,conf:"insufficient",method:m,steps:st});
+ if(!on)return none(0,"Item switched off",["Item unavailable, so forecast demand is 0."]);
+ if(nm.length<3){const v=Math.round(mean(nm.map(x=>x.dem)));return none(v,"Plain average (too little data)",[`Only ${nm.length} normal session(s) on record; 3 are needed. Treat this as a rough guess.`])}
+ const sd=nm.filter(x=>x.day===day),useDay=o.dayOnly&&sd.length>=2,d=(useDay?sd:nm).map(x=>x.dem),k=Math.max(1,Math.min(+o.k||3,d.length)),st=[];let raw;
+ if(o.method!=="hybrid")st.push(useDay?`Using ${d.length} normal ${day} sessions: [${d.join(", ")}]`:`Using all ${d.length} normal sessions${o.dayOnly?` (fewer than 2 ${day} rows, so the weekday filter is skipped)`:""}`);
+ if(o.method==="avg"){raw=mean(d);st.push(`Average = ${raw.toFixed(1)}`)}
+ else if(o.method==="ma"){const q=d.slice(-k);raw=mean(q);st.push(`Last ${q.length} values [${q.join(", ")}] average = ${raw.toFixed(1)}`)}
+ else if(o.method==="wma"){const q=d.slice(-k),w=q.map((_,i)=>i+1),tw=w.reduce((x,y)=>x+y,0);raw=q.reduce((t,x,i)=>t+x*w[i],0)/tw;st.push(`Last ${q.length} values [${q.join(", ")}] with weights [${w.join(", ")}]: sum(value × weight) ÷ ${tw} = ${raw.toFixed(1)}`)}
+ else{const ma=mean(nm.slice(-3).map(x=>x.dem));if(sd.length>=2){const m1=mean(sd.map(x=>x.dem));raw=(m1+ma)/2;st.push(`Same-weekday (${day}) average ${m1.toFixed(1)} and last-3 moving average ${ma.toFixed(1)} → (${m1.toFixed(1)} + ${ma.toFixed(1)}) ÷ 2 = ${raw.toFixed(1)}`)}else{raw=ma;st.push(`Fewer than 2 ${day} rows: last-3 moving average = ${raw.toFixed(1)}`)}}
+ const a=dayAdj(h,id,type);raw*=a.k;st.push(a.txt+(a.k!==1?` Result × ${a.k.toFixed(2)} = ${raw.toFixed(1)}`:""));
+ const sdv=sdev(d);return{v:Math.max(0,Math.round(raw)),lo:Math.max(0,Math.round(raw-sdv)),hi:Math.round(raw+sdv),n:rows.length,conf:sd.length>=3&&nm.length>=8?"good":"limited",method:MN[o.method]||MN.hybrid,steps:st}}
+const base=(h,id)=>Math.round(mean(h.filter(x=>x.id===id&&!x.ev).map(x=>x.dem)));
+/* WASTE: unsold = max(0, prepared - demand); shortage = max(0, demand - prepared); discarded (est.) = unsold x discard rate */
+function wc(p,d){const u=Math.max(0,p-d),sh=Math.max(0,d-p),di=u*S.set.disc;return{u,sh,di,cost:di*S.set.cost,co2:di*S.set.co2}}
+
+/* helpers */
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));saveFail=false}catch(e){saveFail=true}}
+function render(){if(S.role!=="authority"&&AUTH.includes(S.tab))S.tab="student";if(S.role==="authority"&&!TABS_AUTH.some(t=>t[0]===S.tab))S.tab="staff";const a=document.activeElement,id=a&&a.id,pos=a&&a.selectionStart;document.body.classList.toggle("pres",!!S.pres);$("app").innerHTML=(S.intro?introH():head()+VIEWS[S.tab]())+modalH();
+ if(id&&$(id)){$(id).focus();try{$(id).setSelectionRange(pos,pos)}catch(e){}}
+ if(S.focusD){const e=$("d-"+S.focusD);S.focusD=null;if(e)e.focus()}
+ if(MODAL&&MODAL.focus){MODAL.focus=false;const e=$("pinin")||$("mno");if(e)e.focus()}}
+const up=()=>{save();render()};
+function f(k,v){S[k]=v;if(k==="tab"||k==="cat")S.msg=null;up()}
+function say(k,t){S.msg={k,t};up()}
+const msgH=()=>S.msg?`<div class="msg ${S.msg.k}" role="status">${esc(S.msg.t)}</div>`:"";
+const num=v=>Math.max(0,Math.floor(+v||0)),fl=v=>Math.max(0,+v||0);
+function tbl(h,rows){return`<div class="tw"><table><thead><tr>${h.map(x=>`<th>${x}</th>`).join("")}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`}
+function bars(labels,series){const W=640,H=230,L=34,B=34,mx=Math.max(1,...series.flatMap(s=>s.v)),g=(W-L)/labels.length,bw=g*.8/series.length;
+ let o=`<svg viewBox="0 0 ${W} ${H}" style="width:100%" role="img">`;
+ for(let i=0;i<=4;i++){const y=H-B-(H-B-10)*i/4;o+=`<line x1="${L}" x2="${W}" y1="${y}" y2="${y}" stroke="#ece6f7"/><text x="2" y="${y+4}" font-size="10" fill="#6f6988">${Math.round(mx*i/4)}</text>`}
+ labels.forEach((l,i)=>{series.forEach((s,j)=>{const h=(H-B-10)*s.v[i]/mx,x=L+i*g+g*.1+j*bw;o+=`<rect x="${x}" y="${H-B-h}" width="${bw}" height="${h}" rx="3" fill="${s.c}"><title>${s.n} - ${l}: ${s.v[i]}</title></rect>`});
+  o+=`<text x="${L+i*g+g/2}" y="${H-16}" font-size="10" text-anchor="middle" fill="#3b3550">${esc(l)}</text>`});
+ return o+`</svg><div class="muted">${series.map(s=>`<span style="color:${s.c}">■</span> ${s.n}`).join(" &nbsp; ")}</div>`}
+const C=["#2f6b45","#8cc09d","#e07a1f","#b85410"];
+const short=id=>nameOf(id).split(" ").slice(-1)[0];
+
+/* actions */
+const NX={Placed:"Preparing",Preparing:"Ready",Ready:"Completed"};
+const adv=id=>{const o=S.orders.find(x=>x.id===id);o.st=NX[o.st];up()};
+function setm(id,k,v){const m=S.menu.find(x=>x.id===id);if(k==="prep"){const sold=m.prep-m.stock;m.prep=num(v);m.stock=Math.max(0,m.prep-sold)}else if(k==="price")m.price=num(v);else m.on=v;up()}
+function endSess(){ask("Close this session? Today's orders become history rows and the forecast will use them.",endSess2)}
+function endSess2(){const t=todayISO(),due=S.orders.filter(o=>(o.odate||t)<=t),later=S.orders.filter(o=>(o.odate||t)>t),day=dayOf(S.date),qty=(a,id)=>a.reduce((x,o)=>x+(o.L.find(l=>l.id===id)?.q||0),0);let n=0,skip=0;
+ S.menu.forEach(m=>{if(m.prep<=0){skip++;return}const known=m.dis!==null&&m.dis!==undefined&&m.dis!=="";
+  S.hist.push({date:S.date,day,id:m.id,prep:m.prep,dem:qty(due,m.id),disc:known?Math.min(m.stock,num(m.dis)):Math.round(m.stock*S.set.disc),est:!known,ev:S.dtype!=="normal",type:S.dtype});
+  m.stock=Math.max(0,m.prep-qty(later,m.id));m.dis=null;n++});
+ S.orders=later;S.dtype="normal";S.date=nw(S.date);
+ S.msg={k:"good",t:`Session saved to history for ${n} item(s). ${skip?skip+" out-of-stock item(s) were not recorded, because nothing was prepared and their demand is unknown. ":""}${later.length?later.length+" order(s) for later dates stay in the queue. ":""}Forecasts have been recalculated.`};up()}
+function reset(){ask("Restore the original demonstration data? Your orders and changes will be lost.",()=>{const r=S.role;S=fresh();S.intro=false;S.role=r;S.tab=r==="authority"?"staff":"student";up()})}
+const waitFor=o=>{if(o.st==="Ready"||o.st==="Completed")return null;const ah=S.orders.slice(0,S.orders.indexOf(o)).filter(x=>x.st==="Placed"||x.st==="Preparing"),it=ah.reduce((t,x)=>t+x.L.reduce((u,l)=>u+l.q,0),0)+o.L.reduce((u,l)=>u+l.q,0);return Math.ceil(ah.length*S.set.perOrder+it*S.set.minItem)};
+
+/* views */
+const TABS_STUDENT=[["student","🍽️ Menu"],["orders","🧾 My orders"],["about","ℹ️ About"]];
+const TABS_AUTH=[["staff","📋 Staff"],["forecast","📈 Forecast"],["planner","♻️ Waste dashboard"],["sim","🎛️ Simulator"],["exp","🔬 Experiments"],["data","💾 Data"],["about","ℹ️ About"]];
+const AUTH=TABS_AUTH.map(t=>t[0]).filter(t=>t!=="about");
+/* Role switch. DEMO ONLY: the PIN is checked in the browser, so it is not real security. */
+function setRole(r){
+ if(r===S.role)return;
+ if(r==="authority"&&S.role!=="authority"){MODAL={kind:"pin",err:"",focus:true};return render()}
+ S.role=r;S.tab=r==="authority"?"staff":"student";S.msg=null;up()}
+function pinGo(){const v=($("pinin").value||"").trim();
+ if(v!==S.pin){MODAL.err="Incorrect PIN. Please try again, or cancel to stay in student view.";MODAL.focus=true;return render()}
+ MODAL=null;S.role="authority";S.tab="staff";S.msg=null;up()}
+const head=()=>{const au=S.role==="authority",T=au?TABS_AUTH:TABS_STUDENT;
+ return`<header class="top"><div class="brand"><span class="sch">Pallavi Model School, Alwal</span>CanteenIQ<small>Smart Canteen &amp; Food Waste Management System · Presented by Ekyom Kaur, Class IX</small></div><div class="seg" role="group" aria-label="Choose view"><button type="button" class="${au?"":"act"}" aria-pressed="${!au}" onclick="setRole('student')">Student View</button><button type="button" class="${au?"act":""}" aria-pressed="${au}" onclick="setRole('authority')" title="Demonstration PIN only: not real security">Authority View</button></div></header>
+ <nav class="noprint tabs" aria-label="Sections">${T.map(t=>`<button class="${S.tab===t[0]?"on":""}" onclick="f('tab','${t[0]}')">${t[1]}</button>`).join("")}<button onclick="f('pres',!S.pres)" aria-pressed="${!!S.pres}">🎤 Present</button>${au?'<button class="warn" onclick="reset()">↺ Reset demo</button>':""}</nav>${saveFail?'<div class="msg err">Could not save to this browser (storage full or blocked). Changes may be lost on reload: export a JSON backup from the Data tab.</div>':""}${loadWarn?`<div class="msg err">${esc(loadWarn)}</div>`:""}`};
+const introH=()=>`<div class="card hero"><span class="pill mid">Science exhibition project</span><h1>CanteenIQ</h1><p class="sub">Smart Canteen &amp; Food Waste Management System</p><p><b>Pallavi Model School, Alwal</b><br>Presented by Ekyom Kaur · Class IX</p><p>CanteenIQ uses past demand data, three forecasting methods and what-if simulations to help plan canteen preparation and reduce avoidable food waste. All data in this demonstration is simulated.</p><div class="row" style="justify-content:center"><button class="go" onclick="f('intro',false)">Open CanteenIQ</button><button onclick="S.pres=true;f('intro',false)">Presentation mode</button></div><p class="muted">A student project. It is not an official school system and has not been tested on real school data.</p></div>`;
+const dsel=(k)=>`<select onchange="f('${k}',this.value)">${DAYS.map(d=>`<option ${S[k]===d?"selected":""}>${d}</option>`).join("")}</select>`;
+const VIEWS={
+staff(){const day=dayOf(S.date),items=S.orders.reduce((t,o)=>t+o.L.reduce((u,l)=>u+l.q,0),0),pop=S.menu.map(m=>[m,S.orders.reduce((t,o)=>t+(o.L.find(l=>l.id===m.id)?.q||0),0)]).filter(x=>x[1]).sort((a,b)=>b[1]-a[1]);
+ const F=S.menu.map(m=>[m,fc(S.hist,m.id,day,S.dtype,m.on)]),uns=F.reduce((t,[m,x])=>t+Math.max(0,m.prep-x.v),0),aw=S.orders.filter(o=>o.st==="Placed"||o.st==="Preparing").length;
+ return msgH()+`<div class="stats"><div class="card"><span class="muted">Orders in queue</span><b>${S.orders.length}</b></div><div class="card"><span class="muted">Items ordered</span><b>${items}</b></div><div class="card"><span class="muted">Awaiting preparation</span><b>${aw}</b></div><div class="card"><span class="muted">Ready to collect</span><b>${S.orders.filter(o=>o.st==="Ready").length}</b></div><div class="card"><span class="muted">Est. unsold (forecast)</span><b>${uns}</b></div></div>
+ <div class="card"><div class="row between"><h2>Session: ${day}, ${S.date}</h2><div class="row">${dtsel("f('dtype',this.value)",S.dtype)}<button class="go" onclick="endSess()">End session and save to history</button></div></div><p class="muted">Popular today: ${pop.length?pop.map(p=>p[0].name+" ("+p[1]+")").join(", "):"no orders yet"}</p></div>
+ <div class="card"><h2>Stock, prices and next-session forecast</h2>${tbl(["Item","Prepared (0 = out of stock)","In stock","Price ₹","On menu","Forecast (range)","Data","Est. unsold","Shortage risk"],F.map(([m,x])=>{const risk=x.v>m.prep?"High":x.hi>m.prep?"Medium":"Low";return[m.emoji+" "+m.name,`<input type="number" min="0" value="${m.prep}" onchange="setm('${m.id}','prep',this.value)">`,m.stock,`<input type="number" min="0" value="${m.price}" onchange="setm('${m.id}','price',this.value)">`,`<input type="checkbox" ${m.on?"checked":""} onchange="setm('${m.id}','on',this.checked)">`,`<b>${x.v}</b> <span class="muted">(${x.lo}–${x.hi})</span>`,`<span class="pill ${x.conf==="good"?"ok":x.conf==="limited"?"mid":"bad"}">${x.conf}</span>`,Math.max(0,m.prep-x.v),`<span class="pill ${risk==="High"?"bad":risk==="Medium"?"mid":"ok"}">${risk}</span>`]}))}<p class="muted">A forecast is an estimate, not a guarantee. Unsold = max(0, prepared − forecast). Risk is High if the forecast exceeds prepared, Medium if only the top of its range does.</p></div>
+ <div class="card"><h2>Menu availability and order-form options</h2><div class="row"><button class="warn" onclick="restoreMenu()">↺ Restore demonstration menu</button></div><p class="muted">Demonstration menu: Chocolate in stock, every other item out of stock. Orders and history are kept. In the table above, set Prepared to 0 for out of stock or above 0 to make an item available, and change the price there.</p><div class="row"><label class="row">Classes <input id="cfgC" style="width:18rem" value="${esc(S.cfg.classes.join(", "))}"></label><label class="row">Sections <input id="cfgS" style="width:12rem" value="${esc(S.cfg.sections.join(", "))}"></label><button class="go" onclick="saveCfg()">Save options</button></div><p class="muted">Comma-separated demonstration options, not verified school records. Orders, including student names, stay in this browser only.</p></div>
+ <div class="card"><h2>Record discarded food</h2><p class="muted">Before ending the session, enter how many portions were actually thrown away (at most the portions still in stock). Leave blank if not measured: CanteenIQ then uses an estimate (unsold × discard share) and labels it as estimated. Sold = min(prepared, demand).</p>${tbl(["Item","Unsold now","Discarded (measured)"],S.menu.map(m=>[m.name,m.stock,`<input type="number" min="0" max="${m.stock}" placeholder="unknown" value="${m.dis==null?"":m.dis}" onchange="S.menu.find(x=>x.id==='${m.id}').dis=this.value===''?null:Math.min(${m.stock},num(this.value));up()">`]))}</div>
+ <div class="card"><h2>Order queue</h2>${S.orders.length?tbl(["Order","Name","Order date","Class","Section","Items (price each)","Total","Pickup time","Status","Action"],S.orders.map(o=>[`<b>${esc(o.id)}</b>`,esc(o.name||"-"),esc(fmtDate(o.odate||todayISO())),esc(o.cls||"-"),esc(o.sec||"-"),o.L.map(l=>esc(l.q+"× "+l.name+" @ ₹"+l.p)).join(", "),"₹"+o.tot,esc(o.slot),`<span class="pill ${o.st}">${o.st}</span>`,NX[o.st]?`<button class="sm" onclick="adv('${o.id}')">Mark ${NX[o.st].toLowerCase()}</button>`:"-"])):'<p class="muted">No orders yet. Place some from the Menu tab.</p>'}
+ <div class="row" style="margin-top:.6rem"><label class="row">Prep min per item <input type="number" step="0.5" min="0" value="${S.set.minItem}" onchange="S.set.minItem=fl(this.value);up()"></label><label class="row">Min per order <input type="number" step="0.5" min="0" value="${S.set.perOrder}" onchange="S.set.perOrder=fl(this.value);up()"></label></div></div>`},
+planner(){const pl=id=>S.plan&&Number.isFinite(S.plan[id])?S.plan[id]:(FIX[id]||0),rows=S.menu.filter(m=>S.test.some(r=>r.id===m.id&&r.day===S.pd)).map(m=>{const t0=S.test.find(r=>r.id===m.id&&r.day===S.pd),d=t0.dem,alt=fc(tr(t0),m.id,S.pd,"normal",true).v;return{m,d,alt,a:wc(pl(m.id),d),b:wc(alt,d)}});
+ const T=k=>rows.reduce((t,r)=>({u:t.u+r[k].u,sh:t.sh+r[k].sh,di:t.di+r[k].di,cost:t.cost+r[k].cost,co2:t.co2+r[k].co2}),{u:0,sh:0,di:0,cost:0,co2:0}),A=T("a"),B=T("b");
+ return wasteBlock()+`<div class="card"><h2>Food-waste planner (what-if on the labelled test week)</h2><div class="row">Demand scenario (labelled test week): ${dsel("pd")}<label class="row">Share of unsold food discarded <input type="number" min="0" max="100" value="${Math.round(S.set.disc*100)}" onchange="S.set.disc=Math.min(100,fl(this.value))/100;up()">%</label><label class="row">₹/portion <input type="number" min="0" value="${S.set.cost}" onchange="S.set.cost=fl(this.value);up()"></label><label class="row">kg CO₂e/portion (0 unless you have a documented factor) <input type="number" step="0.1" min="0" value="${S.set.co2}" onchange="S.set.co2=fl(this.value);up()"></label></div>
+ ${tbl(["Item","Actual demand","Your plan","Unsold","Shortage","Est. discarded","Forecast plan","Unsold","Shortage","Est. discarded"],rows.map(r=>[r.m.name,r.d,`<input type="number" min="0" value="${pl(r.m.id)}" onchange="S.plan['${r.m.id}']=num(this.value);up()">`,r.a.u,r.a.sh,r.a.di.toFixed(1),"<b>"+r.alt+"</b>",r.b.u,r.b.sh,r.b.di.toFixed(1)]).concat([["<b>Total</b>","","",A.u,A.sh,A.di.toFixed(1),"",B.u,B.sh,B.di.toFixed(1)]]))}
+ <div class="two" style="margin-top:1rem"><div class="box"><b>Your plan:</b> ${A.u} unsold, ${A.sh} short, ~${A.di.toFixed(1)} discarded<br>≈ ₹${A.cost.toFixed(0)}${co2t(A)}</div><div class="box"><b>Forecast plan:</b> ${B.u} unsold, ${B.sh} short, ~${B.di.toFixed(1)} discarded<br>≈ ₹${B.cost.toFixed(0)}${co2t(B)}</div></div>
+ <p class="muted"><b>Formulas:</b> unsold = max(0, prepared − demand); shortage = max(0, demand − prepared); est. discarded = unsold × discard share (${Math.round(S.set.disc*100)}%); money = discarded × ₹${S.set.cost}; CO₂ = discarded × ${S.set.co2} kg. The ₹ and CO₂ values are <b>assumptions you can edit</b>, not measurements. A lower-waste plan may leave more students short: compare both columns.</p></div>`},
+exp(){const T=S.test.map(r=>{const f=fc(tr(r),r.id,r.day,"normal").v,b=base(tr(r),r.id);return{r,f,b,ef:Math.abs(f-r.dem),eb:Math.abs(b-r.dem)}}),mf=mean(T.map(x=>x.ef)),mb=mean(T.map(x=>x.eb));
+ const ids=S.menu.filter(m=>S.hist.some(r=>r.id===m.id)).map(m=>m.id),lab=ids.map(short);
+ const sum=(fn)=>ids.map(id=>T.filter(x=>x.r.id===id).reduce((t,x)=>t+fn(x),0));
+ const st=(fn)=>{let u=0,s=0,d=0;S.test.forEach(r=>{const w=wc(fn(r),r.dem);u+=w.u;s+=w.sh;d+=w.di});return{u,s,d}},X=st(r=>FIX[r.id]),Y=st(r=>fc(tr(r),r.id,r.day,"normal").v);
+ const H=S.hist.filter(x=>!x.ev),byItem=f=>ids.map(id=>f(S.hist.filter(x=>x.id===id)));
+ return`<div class="card"><h2>Experiment 1: Demand forecasting (MAE)</h2><p class="muted">The forecast uses only the 15 history sessions. It is checked against the separate labelled TEST week (25 rows, fictional). MAE = sum of |forecast − actual| ÷ number of observations.</p>
+ <div class="two"><div class="box">${MN[S.fm.method]} MAE: <b style="font-size:1.4rem">${mf.toFixed(2)}</b> portions</div><div class="box">Naive baseline (overall item average) MAE: <b style="font-size:1.4rem">${mb.toFixed(2)}</b> portions</div></div>
+ <p>${mf<mb?"On this data the forecast method has the lower error.":mf>mb?"On this data the naive baseline has the lower error.":"Both methods have the same error."} With only ${S.test.length} observations this is a small demonstration, not proof.</p>
+ ${bars(lab,[{n:"Forecast (week total)",c:C[0],v:sum(x=>x.f)},{n:"Actual (week total)",c:C[1],v:sum(x=>x.r.dem)}])}${bars(lab,[{n:"MAE forecast",c:C[0],v:ids.map(id=>mean(T.filter(x=>x.r.id===id).map(x=>x.ef)))},{n:"MAE baseline",c:C[2],v:ids.map(id=>mean(T.filter(x=>x.r.id===id).map(x=>x.eb)))}])}
+ ${tbl(["Date","Day","Item","Baseline","Forecast","Actual","|Error| forecast","|Error| baseline"],T.map(x=>[x.r.date,x.r.day,nameOf(x.r.id),x.b,x.f,x.r.dem,x.ef,x.eb]))}</div>
+ <div class="card"><h2>Experiment 2: Food-waste planning</h2><p class="muted">Same test demand, two strategies. Fixed = the usual quantities (${ids.map(i=>FIX[i]).filter(v=>v!=null).join(", ")}). Forecast = prepare exactly the forecast for that weekday. Discarded = unsold × ${Math.round(S.set.disc*100)}% (assumption).</p>
+ ${tbl(["Strategy","Unsold portions","Unmet demand (shortage)","Est. discarded"],[["Fixed quantity",X.u,X.s,X.d.toFixed(1)],["Forecast-based",Y.u,Y.s,Y.d.toFixed(1)]])}
+ <p><b>Reading:</b> ${Y.u<X.u?"The forecast plan leaves fewer unsold portions":"The fixed plan leaves fewer unsold portions"}, and ${Y.s<X.s?"the forecast plan":"the fixed plan"} has less unmet demand. ${Y.u<X.u&&Y.s>X.s?"So the forecast plan trades some shortages for less waste.":""} Change the data (End session, or edit seed numbers) and this result can flip. It is a simulation, not measured waste.</p></div>
+ <div class="card"><h2>Experiment 3: Visualising the history</h2><div class="two"><div><h3>Total demand by item (15 sessions)</h3>${bars(lab,[{n:"Demand",c:C[0],v:byItem(r=>r.reduce((t,x)=>t+x.dem,0))}])}</div><div><h3>Average demand by weekday (normal days)</h3>${bars(DAYS,[{n:"Avg portions, all items",c:C[1],v:DAYS.map(d=>mean(H.filter(x=>x.day===d).map(x=>x.dem)))}])}</div></div>
+ <h3>Prepared vs sold vs unsold (average per session)</h3>${bars(lab,[{n:"Prepared",c:C[0],v:byItem(r=>mean(r.map(x=>x.prep)))},{n:"Sold",c:C[1],v:byItem(r=>mean(r.map(x=>Math.min(x.prep,x.dem))))},{n:"Unsold",c:C[3],v:byItem(r=>mean(r.map(x=>Math.max(0,x.prep-x.dem))))}])}
+ <p class="muted">Popular: highest bars in the first chart. Quiet sessions: lowest weekday bars. Over-preparation: a big pink "Unsold" bar.</p><h3>Underlying history data (${S.hist.length} rows)</h3>${tbl(["Date","Day","Item","Prepared","Demand","Unsold","Shortage","Discarded","Event"],S.hist.map(x=>[x.date,x.day,nameOf(x.id),x.prep,x.dem,Math.max(0,x.prep-x.dem),Math.max(0,x.dem-x.prep),x.disc,x.ev?"yes":""]))}</div>
+ ${evalBlock()}${stratBlock()}<div class="card"><h2>Explanation and limitations</h2><p><b>Problem:</b> canteens prepare too much (waste) or too little (shortages).</p><p><b>Maths used:</b> averages, a moving average, standard deviation (for the range), absolute error and MAE.</p><p><b>Estimated vs measured waste:</b> this app <i>estimates</i> unsold and discarded food from simulated numbers. Measured waste means actually weighing or counting discarded food in a real canteen.</p><p><b>Limitations:</b> fictional data; tiny test set; no weather, exams or menu-popularity changes; one browser's storage only (not shared between devices); results do not show real waste reduction.</p><p><b>Improvement:</b> record real anonymised daily prepared, sold and discarded counts for many weeks, then re-run these experiments.</p></div>`}};
+/* ===== Upgrade modules: methods, evaluation, waste intelligence, simulator, about, data tools ===== */
+const dtsel=(h,v)=>`<select aria-label="Day type" onchange="${h}">${DTYPES.map(d=>`<option value="${d[0]}" ${v===d[0]?"selected":""}>${d[1]}</option>`).join("")}</select>`;
+const fm=(k,v)=>{S.fm[k]=v;up()};
+const co2t=x=>S.set.co2>0?` and ${x.co2.toFixed(1)} kg CO₂e (using your assumed factor)`:" (CO₂ not calculated: no documented factor entered)";
+const MK={avg:"A: Average",ma:"B: Moving avg",wma:"C: Weighted MA",hybrid:"Hybrid"};
+const confPill=c=>`<span class="pill ${c==="good"?"ok":c==="limited"?"mid":"bad"}">${c}</span>`;
+
+function evalMethods(){return Object.keys(MN).map(m=>{const o={...S.fm,method:m},er=S.test.map(r=>{const v=fc(tr(r),r.id,r.day,"normal",true,o).v;return{r,f:v,e:Math.abs(v-r.dem)}});
+ return{m,er,mae:mean(er.map(x=>x.e)),rmse:Math.sqrt(mean(er.map(x=>x.e*x.e)))}})}
+function evalBlock(){if(S.test.length<3)return`<div class="card"><h2>Experiment A: Forecast accuracy</h2><p class="muted">Not enough labelled evaluation data (at least 3 test observations needed), so no accuracy score is shown.</p></div>`;
+ const E=evalMethods(),best=E.reduce((a,b)=>b.mae<a.mae?b:a);
+ return`<div class="card"><h2>Experiment A: Comparing forecasting methods</h2><p class="muted"><b>Training data:</b> history rows dated before each test row (future data is never used). <b>Evaluation data:</b> ${S.test.length} labelled simulated test rows. Settings: window k = ${S.fm.k}, weekday filter ${S.fm.dayOnly?"on":"off"}. MAE = average |forecast − actual|. RMSE = square root of the average squared error (large misses count more). Lower error generally means better prediction <i>on this dataset</i>.</p>
+ ${tbl(["Method","MAE","RMSE"],E.map(e=>[MN[e.m]+(e===best?' <span class="pill ok">lowest MAE here</span>':""),e.mae.toFixed(2),e.rmse.toFixed(2)]))}
+ <p>On this evaluation set <b>${MN[best.m]}</b> had the lowest MAE. With different data another method could win: none is best everywhere.</p>
+ ${bars(E.map(e=>MK[e.m]),[{n:"MAE",c:C[0],v:E.map(e=>e.mae)},{n:"RMSE",c:C[2],v:E.map(e=>e.rmse)}])}
+ <h3>Observation-level results</h3>${tbl(["Date","Item","Actual (test)"].concat(E.map(e=>MK[e.m]+" forecast (|err|)")),S.test.map((r,i)=>[r.date,nameOf(r.id),r.dem].concat(E.map(e=>e.er[i].f+" ("+e.er[i].e+")"))))}</div>`}
+function stratBlock(){const c=S.set.cost,F=r=>fc(tr(r),r.id,r.day,"normal",true).v,
+ ev=fn=>{let u=0,sh=0,pc=0,so=0;S.test.forEach(r=>{const q=Math.max(0,Math.ceil(fn(r)-1e-9)),w=wc(q,r.dem);u+=w.u;sh+=w.sh;pc+=q*c;so+=w.u*c});return{u,sh,pc,so}};
+ if(S.test.length<1)return"";
+ const R=[["Exactly the forecast",ev(F)],["Forecast + 10%",ev(r=>F(r)*1.1)],["Conservative: forecast − 10%",ev(r=>F(r)*.9)]],O=ev(r=>FIX[r.id]),N=ev(r=>F(r)*(1+S.fm.buf/100));
+ const row=(n,x)=>[n,x.u,x.sh,"₹"+x.pc.toFixed(0),"₹"+x.so.toFixed(0)],dl=(a,b)=>(b-a>0?"+":"")+(b-a);
+ return`<div class="card"><h2>Experiment B: Preparation quantity</h2><p class="muted">Same simulated test week, same forecasts. Assumptions: cost ₹${c}/portion (editable in the Waste dashboard); every portion prepared costs money; surplus cost = unsold × cost (an accounting assumption, not a verified loss).</p>
+ ${tbl(["Strategy","Unsold portions","Shortage portions","Preparation cost","Cost of surplus"],R.map(r=>row(r[0],r[1])))}${bars(R.map(r=>r[0].split(":")[0].replace("Exactly the forecast","Exact")),[{n:"Unsold",c:C[3],v:R.map(r=>r[1].u)},{n:"Shortage",c:C[2],v:R.map(r=>r[1].sh)}])}<p class="muted">More preparation lowers shortages but raises surplus and cost: there is a trade-off, and the best choice depends on how costly a shortage is compared with a surplus.</p></div>
+ <div class="card"><h2>Experiment C: Effect of better planning</h2><p class="muted">Baseline = the usual fixed quantities. Improved = forecast + ${S.fm.buf}% safety buffer (rounded up). Simulated test data only.</p>
+ ${tbl(["Plan","Unsold","Shortage","Preparation cost","Cost of surplus"],[row("Baseline (fixed)",O),row("Improved (forecast + buffer)",N),["Change (improved − baseline)",dl(O.u,N.u),dl(O.sh,N.sh),"₹"+dl(O.pc,N.pc).replace(/\.0+$/,""),"₹"+dl(O.so,N.so)]])}
+ <p class="warnbox">These are results on simulated data. They do not show that CanteenIQ has reduced food waste at Pallavi Model School, Alwal, and a different dataset could favour the baseline.</p></div>`}
+
+function wasteBlock(){const R=S.hist,ids=S.menu.filter(m=>S.hist.some(r=>r.id===m.id)).map(m=>m.id),lab=ids.map(short);
+ if(!R.length)return`<div class="card"><h2>Food waste intelligence</h2><p class="muted">No records yet. End a session in Staff to add history.</p></div>`;
+ const sold=r=>Math.min(r.prep,r.dem),uns=r=>Math.max(0,r.prep-r.dem),sum=(a,f)=>a.reduce((t,r)=>t+f(r),0),
+ P=sum(R,r=>r.prep),So=sum(R,sold),U=sum(R,uns),D=sum(R,r=>r.disc),meas=R.filter(r=>r.est===false).length,pc=x=>P?(100*x/P).toFixed(1)+"%":"n/a",
+ kind=meas===R.length?"measured":meas?"partly estimated":"estimated (simulated)",by=f=>ids.map(id=>f(R.filter(r=>r.id===id))),byD=f=>DAYS.map(d=>f(R.filter(r=>r.day===d&&!r.ev))),
+ dates=[...new Set(R.map(r=>r.date))].sort().slice(-20),m=a=>mean(a),stat=(l,v,n)=>`<div class="card"><span class="muted">${l}</span><b>${v}</b><span class="muted">${n}</span></div>`;
+ const recs=ids.map(id=>{const r=R.filter(x=>x.id===id&&!x.ev),n=r.length;if(n<5)return null;const share=m(r.map(uns))/Math.max(1,m(r.map(x=>x.prep))),out=r.filter(x=>x.dem>=x.prep).length;
+  if(share>=.15)return`<li><b>${nameOf(id)}</b>: about ${(100*share).toFixed(0)}% of prepared portions went unsold on average over ${n} normal sessions. Consider a lower plan, then check the shortage count.</li>`;
+  if(out/n>=.25)return`<li><b>${nameOf(id)}</b>: demand met or exceeded the plan in ${out} of ${n} normal sessions. Consider preparing more.</li>`;return null}).filter(Boolean);
+ const wd=DAYS.map((d,i)=>[d,byD(r=>m(r.map(uns)))[i]]).sort((a,b)=>b[1]-a[1])[0],evr=R.filter(r=>r.ev);
+ return`<div class="card"><h2>Food waste intelligence</h2><p class="muted">Based on ${R.length} history rows (${dates.length>=20?"last 20 sessions shown in the trend":"all sessions"}). <b>Unsold is not the same as discarded:</b> unsold food may be sold later, reused or donated. Discarded counts only food actually thrown away. Discarded values here are <b>${kind}</b>.</p>
+ <div class="stats">${stat("Portions prepared",P,"")}${stat("Portions sold",So,"min(prepared, demand)")}${stat("Unsold portions",U,pc(U)+" of prepared")}${stat("Discarded portions",D,kind)}${stat("Waste %",pc(D),"discarded ÷ prepared ("+kind+")")}${stat("Cost of discarded",`₹${(D*S.set.cost).toFixed(0)}`,"discarded × ₹"+S.set.cost+" (assumption)")}</div>
+ <div class="two"><div><h3>Prepared vs sold, by item</h3>${bars(lab,[{n:"Prepared",c:C[0],v:by(r=>sum(r,x=>x.prep))},{n:"Sold",c:C[1],v:by(r=>sum(r,sold))}])}</div><div><h3>Unsold portions by item</h3>${bars(lab,[{n:"Unsold",c:C[3],v:by(r=>sum(r,uns))}])}</div>
+ <div><h3>Average unsold by weekday (normal days)</h3>${bars(DAYS,[{n:"Avg unsold (all items)",c:C[2],v:byD(r=>m(r.map(uns)))}])}</div><div><h3>Unsold over time (per session)</h3>${bars(dates.map(d=>d.slice(5)),[{n:"Unsold",c:C[3],v:dates.map(d=>sum(R.filter(r=>r.date===d),uns))}])}</div>
+ <div><h3>Estimated cost of discarded food, by item (₹)</h3>${bars(lab,[{n:"₹ (assumed cost)",c:C[2],v:by(r=>sum(r,x=>x.disc)*S.set.cost)}])}</div></div>
+ <h3>Data-supported suggestions</h3><ul>${recs.length?recs.join(""):"<li>No strong surplus or sell-out pattern in normal sessions.</li>"}<li>Weekday pattern: the highest average unsold is on <b>${wd[0]}</b> (${wd[1].toFixed(1)} portions per item).</li>${evr.length?`<li>Plan event days separately: ${evr.length} event row(s) exist and their demand differs from normal days.</li>`:"<li>No event-day rows yet: event demand cannot be estimated from data.</li>"}</ul><p class="muted">These are patterns in the data, not verified causes.</p>
+ <p class="warnbox"><b>Environmental impact:</b> ${S.set.co2>0?`calculated only from your assumed factor of ${S.set.co2} kg CO₂e per portion, so treat it as illustrative.`:"not calculated, because no documented kg CO₂e-per-portion factor has been entered. In general, preparing less food that is never eaten saves the ingredients, energy and effort used to make it."}</p></div>`}
+
+VIEWS.forecast=function(){const o=S.fm,m=S.menu.find(x=>x.id===S.fi),f=fc(S.hist,S.fi,S.fd,S.dtype,m.on),rec=Math.ceil(f.v*(1+o.buf/100)),act=S.test.find(r=>r.id===S.fi&&r.day===S.fd),fa=act?fc(tr(act),act.id,act.day,"normal",m.on):null;
+ const adjIn=(k,l)=>`<label class="row">${l} % <input type="number" min="-60" max="100" value="${S.adj[k]}" onchange="S.adj['${k}']=Math.max(-60,Math.min(100,+this.value||0));up()"></label>`;
+ return`<div class="card"><h2>Demand forecast</h2><div class="row"><select aria-label="Item" onchange="f('fi',this.value)">${S.menu.map(x=>`<option value="${x.id}" ${S.fi===x.id?"selected":""}>${x.name}</option>`).join("")}</select>${dsel("fd")}${dtsel("f('dtype',this.value)",S.dtype)}</div>
+ <div class="row" style="margin-top:.6rem">Method <select aria-label="Method" onchange="fm('method',this.value)">${Object.keys(MN).map(k=>`<option value="${k}" ${o.method===k?"selected":""}>${MN[k]}</option>`).join("")}</select>
+ <label class="row">Window k <input type="number" min="1" max="10" value="${o.k}" onchange="fm('k',Math.max(1,Math.min(10,num(this.value)||3)))"></label><label class="row"><input type="checkbox" ${o.dayOnly?"checked":""} onchange="fm('dayOnly',this.checked)"> same weekday only</label><label class="row">Safety buffer % <input type="number" min="0" max="50" value="${o.buf}" onchange="fm('buf',Math.min(50,fl(this.value)))"></label></div>
+ <p class="muted"><b>${MN[o.method]}:</b> ${MEXP[o.method]}</p>
+ <div class="row muted">Manual day-type adjustments (used only if no past data for that day type): ${adjIn("exam","Exam")}${adjIn("short","Shortened")}${adjIn("event","Event")}</div>
+ <div class="two" style="margin-top:1rem"><div class="box"><span class="muted">Predicted demand (forecast, not actual)</span><div style="font-size:2rem;font-weight:700">${f.v} <span class="muted">(range ${f.lo}–${f.hi})</span></div>${confPill(f.conf)} <span class="muted">${f.n} history rows</span>${f.conf==="insufficient"?'<p class="bad2">Not enough information: treat this as a rough guess.</p>':""}
+ <hr><span class="muted">Recommended preparation</span><div style="font-size:1.6rem;font-weight:700;color:var(--ac)">${rec} portions</div><span class="muted">= ceil(forecast ${f.v} × (1 + ${o.buf}% buffer)). The buffer protects against shortages; raise it if running out costs more than surplus.</span></div>
+ <div class="box"><b>How this was calculated</b> <span class="muted">(${f.method})</span><ol style="margin:.4rem 0;padding-left:1.2rem">${f.steps.map(x=>`<li>${esc(x)}</li>`).join("")}</ol></div></div>
+ <p>${act?`Labelled <b>test</b> actual for ${S.fd} (${act.date}): <b>${act.dem}</b>. Forecast made only from earlier history: ${fa.v}. Error = <b>${Math.abs(fa.v-act.dem)}</b> portions.`:"No test-week actual exists for this selection."}</p>
+ <p class="muted">A forecast is an estimate, not a guarantee. It uses only past data and does not know about weather, exams or sudden changes. Data shown is simulated.</p></div>
+ <div class="card"><h2>All items: ${S.fd}, ${DTYPES.find(d=>d[0]===S.dtype)[1]}</h2>${tbl(["Item","Predicted","Recommended prep","Range","Data","Test actual","Abs. error"],S.menu.map(x=>{const y=fc(S.hist,x.id,S.fd,S.dtype,x.on),a=S.test.find(r=>r.id===x.id&&r.day===S.fd),z=a?fc(tr(a),a.id,a.day,"normal",x.on).v:null;return[x.name,"<b>"+y.v+"</b>",Math.ceil(y.v*(1+o.buf/100)),y.lo+"–"+y.hi,confPill(y.conf),a?a.dem:"-",a?Math.abs(z-a.dem):"-"]}))}<p class="muted">Test actual and error use a forecast trained only on earlier rows, for a normal day.</p></div>${evalBlock()}`};
+
+/* ---- What-if simulator: only the results panel re-renders, so sliders stay smooth ---- */
+function sin(k,v,n){S.sim[k]=n?(Number.isFinite(+v)?+v:0):v;save();$("simres").innerHTML=simRes()}
+function sitem(v){S.sim.id=v;S.sim.base=S.sim.prep=FIX[v]||S.menu.find(x=>x.id===v).prep;up()}
+function simRes(){const s=S.sim,cost=Math.max(0,s.cost),f=fc(S.hist,s.id,s.day,s.type,true),att=Math.max(0,s.att),D=Math.max(0,Math.round(f.v*(att/100)*(1+s.adj/100))),
+ pl=q=>{q=Math.max(0,Math.round(q));const sur=Math.max(0,q-D),sh=Math.max(0,D-q);return{q,sur,sh,pc:q*cost,sc:sur*cost}},A=pl(s.base),B=pl(s.prep),afford=cost>0?Math.floor(Math.max(0,s.budget)/cost):null,d=(a,b)=>(b-a>0?"+":"")+(+(b-a).toFixed(2));
+ return`${f.conf==="insufficient"?'<p class="warnbox">Little history for this item: the demand estimate is a rough guess.</p>':""}
+ <div class="stats"><div class="card"><span class="muted">Predicted demand</span><b>${D}</b></div><div class="card"><span class="muted">Planned preparation</span><b>${B.q}</b></div><div class="card"><span class="muted">Expected shortage</span><b class="${B.sh?"bad2":""}">${B.sh}</b></div><div class="card"><span class="muted">Expected surplus (unsold)</span><b class="${B.sur?"bad2":""}">${B.sur}</b></div><div class="card"><span class="muted">Preparation cost</span><b>₹${B.pc.toFixed(0)}</b></div><div class="card"><span class="muted">Cost of surplus</span><b>₹${B.sc.toFixed(0)}</b></div></div>
+ ${afford!==null&&B.q>afford?`<p class="warnbox">The adjusted plan costs ₹${B.pc.toFixed(0)}, above your budget of ₹${s.budget}. At ₹${cost}/portion the budget covers ${afford} portions.</p>`:""}
+ ${tbl(["","Original plan","Adjusted plan","Change"],[["Portions prepared",A.q,B.q,d(A.q,B.q)],["Expected shortage",A.sh,B.sh,d(A.sh,B.sh)],["Expected surplus",A.sur,B.sur,d(A.sur,B.sur)],["Preparation cost (₹)",A.pc.toFixed(0),B.pc.toFixed(0),d(A.pc,B.pc)],["Cost of surplus (₹)",A.sc.toFixed(0),B.sc.toFixed(0),d(A.sc,B.sc)]])}
+ ${bars(["Surplus","Shortage"],[{n:"Original plan",c:C[1],v:[A.sur,A.sh]},{n:"Adjusted plan",c:C[0],v:[B.sur,B.sh]}])}
+ <div class="box muted"><b>How it is calculated.</b> Historical demand level (${MN[S.fm.method]}, ${s.day}, ${DTYPES.find(x=>x[0]===s.type)[1]}) = ${f.v}. Predicted demand = ${f.v} × attendance ${att}% × (1 + adjustment ${s.adj}%) = ${D}. Surplus = max(0, prepared − demand). Shortage = max(0, demand − prepared). Preparation cost = prepared × ₹${cost}. The day-type effect (${esc(f.steps[f.steps.length-1])}) is applied once inside the historical level; the adjustment slider is your extra judgement, so do not repeat the same effect there. Scenario estimates, not guaranteed outcomes.</div>`}
+VIEWS.sim=function(){const s=S.sim,m=S.menu.find(x=>x.id===s.id);
+ return`<div class="card"><h2>🎛️ What-if demand simulator</h2><p class="muted">Change any control and the results update at once. Scenario estimates built on simulated history.</p><div class="two"><div>
+ <label class="ctl">Menu item<select onchange="sitem(this.value)">${S.menu.map(x=>`<option value="${x.id}" ${s.id===x.id?"selected":""}>${x.name}</option>`).join("")}</select></label>
+ <label class="ctl">Day of week<select onchange="sin('day',this.value)">${DAYS.map(d=>`<option ${s.day===d?"selected":""}>${d}</option>`).join("")}</select></label>
+ <label class="ctl">Day type<select onchange="sin('type',this.value)">${DTYPES.map(d=>`<option value="${d[0]}" ${s.type===d[0]?"selected":""}>${d[1]}</option>`).join("")}</select></label>
+ <label class="ctl">Expected student attendance: <b id="av">${s.att}%</b> of a usual day<input type="range" min="50" max="130" step="5" value="${s.att}" oninput="sin('att',this.value,1);$('av').textContent=this.value+'%'"></label>
+ <label class="ctl">Extra demand adjustment: <b id="ad">${s.adj}%</b><input type="range" min="-30" max="30" step="1" value="${s.adj}" oninput="sin('adj',this.value,1);$('ad').textContent=this.value+'%'"></label></div><div>
+ <label class="ctl">Original plan (portions)<input type="number" min="0" value="${s.base}" oninput="sin('base',this.value,1)"></label>
+ <label class="ctl">Adjusted plan (portions)<input type="number" min="0" value="${s.prep}" oninput="sin('prep',this.value,1)"></label>
+ <label class="ctl">Cost per portion (₹)<input type="number" min="0" step="0.5" value="${s.cost}" oninput="sin('cost',this.value,1)"></label>
+ <label class="ctl">Available preparation budget (₹)<input type="number" min="0" value="${s.budget}" oninput="sin('budget',this.value,1)"></label>
+ <p class="muted">Menu price is ₹${m.price}; cost per portion is your own assumption.</p></div></div></div><div id="simres">${simRes()}</div>`};
+
+VIEWS.about=function(){return`<div class="card"><div class="row between"><div><span class="sch" style="color:var(--or);font-weight:600;font-size:.8rem;text-transform:uppercase">Pallavi Model School, Alwal</span><h2 style="font-size:1.6rem;color:var(--ac)">CanteenIQ: Smart Canteen &amp; Food Waste Management System</h2><b>Presented by Ekyom Kaur · Class IX</b></div><button class="go noprint" onclick="window.print()">🖨️ Print / save as PDF</button></div>
+ <p><b>Objective:</b> to use data-driven planning, demand forecasting and interactive simulations to reduce food waste, improve canteen preparation decisions and support sustainable canteen management.</p>
+ <h3>The problem</h3><p>Canteens may prepare too much or too little food when demand is difficult to predict. Too much leaves surplus; too little leaves students without food.</p>
+ <h3>The proposed solution</h3><p>CanteenIQ uses historical demand, three forecasting methods, preparation planning and what-if simulations so that staff can compare options before cooking.</p>
+ <h3>Scientific principles</h3><p>Averages, moving averages, weighted averages, prediction error (MAE and RMSE), data interpretation, mathematical modelling and scenario analysis.</p>
+ <h3>Sustainability connection</h3><p>Better planning may help reduce avoidable surplus, unnecessary preparation cost and food waste. CanteenIQ separates <i>unsold</i> food from food actually <i>discarded</i>, and separates measured values from estimates.</p>
+ <h3>Limitations</h3><p>Forecasts depend on the quality and quantity of data. All numbers in this demonstration are simulated, so they are not proof of real-world performance and are not observations from Pallavi Model School, Alwal. This is a student project, not an official school system. The sign-in PIN is a demonstration only and gives no real security. Data is stored only in this browser.</p>
+ <h3>Possible improvement</h3><p>With permission, record anonymous daily prepared, sold and discarded counts for several weeks, then re-run the experiments on that real data.</p></div>`};
+
+/* ---- Data tools: CSV / JSON export, validated import, reset vs delete ---- */
+function dl(name,text,type){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+const cell=v=>{v=String(v);if(/^[=+\-@]/.test(v))v="'"+v;return'"'+v.replace(/"/g,'""')+'"'};
+const csvRows=rows=>"date,day,item,prepared,demand,sold,unsold,discarded,discard_is_estimate,day_type\n"+rows.map(r=>[r.date,r.day,nameOf(r.id),r.prep,r.dem,Math.min(r.prep,r.dem),Math.max(0,r.prep-r.dem),r.disc,r.est!==false,r.ev?(r.type||"event"):"normal"].map(cell).join(",")).join("\n");
+function exportJSON(){dl("canteeniq-data.json",JSON.stringify({app:"CanteenIQ",version:1,exported:new Date().toISOString(),note:"Orders are not exported, to avoid personal names.",menu:S.menu,hist:S.hist,test:S.test,set:S.set,adj:S.adj,fm:S.fm},null,1),"application/json")}
+const okRow=r=>r&&typeof r==="object"&&/^\d{4}-\d{2}-\d{2}$/.test(r.date)&&DAYS.includes(r.day)&&S.menu.some(m=>m.id===r.id)&&[r.prep,r.dem,r.disc].every(v=>Number.isFinite(v)&&v>=0&&v<=10000)&&typeof r.ev==="boolean";
+const cleanRows=a=>{const seen=new Map;a.filter(okRow).forEach(r=>seen.set(r.date+"|"+r.id,{date:r.date,day:r.day,id:r.id,prep:r.prep,dem:r.dem,disc:Math.min(r.disc,r.prep),est:r.est!==false,ev:r.ev,type:r.ev?(["exam","short","event"].includes(r.type)?r.type:"event"):"normal"}));return[...seen.values()].sort((x,y)=>x.date<y.date?-1:1)};
+function impFile(inp){const file=inp.files[0];inp.value="";if(!file)return;if(file.size>2e6)return say("err","File too large (maximum 2 MB). Nothing was changed.");
+ const rd=new FileReader();rd.onerror=()=>say("err","The file could not be read. Nothing was changed.");
+ rd.onload=()=>{let p;try{p=JSON.parse(rd.result)}catch(e){return say("err","This file is not valid JSON. Nothing was changed.")}
+  if(!p||p.app!=="CanteenIQ"||!Array.isArray(p.hist)||!Array.isArray(p.test))return say("err","Incompatible file: it must be a CanteenIQ export containing hist and test lists. Nothing was changed.");
+  const h=cleanRows(p.hist),t=cleanRows(p.test),bad=p.hist.length+p.test.length-h.length-t.length;
+  if(!h.length)return say("err","No valid history rows were found. Nothing was changed.");
+  return ask(`Import ${h.length} history rows and ${t.length} test rows${bad>0?` (${bad} invalid or duplicate rows skipped)`:""}? This REPLACES your current history and test data. Export a backup first if unsure.`,()=>{S.hist=h;S.test=t;say("good",`Imported ${h.length} history rows and ${t.length} test rows.`)})};rd.readAsText(file)}
+function delAll(){ask("Delete ALL saved CanteenIQ data from this browser (including backups) and start fresh? This cannot be undone.",()=>{try{localStorage.removeItem(KEY);localStorage.removeItem(KEY+"-backup")}catch(e){}S=fresh();S.intro=false;S.role="student";loadWarn="";up()})}
+VIEWS.data=function(){return msgH()+`<div class="card"><h2>💾 Data: export, import, reset</h2><p class="muted">History: ${S.hist.length} rows · Test: ${S.test.length} rows · Orders today: ${S.orders.length}. Everything is stored only in this browser on this computer; other devices do not see it.</p>
+ <div class="row"><button onclick="dl('canteeniq-history.csv',csvRows(S.hist),'text/csv')">⬇ History (CSV)</button><button onclick="dl('canteeniq-test.csv',csvRows(S.test),'text/csv')">⬇ Test data (CSV)</button><button onclick="exportJSON()">⬇ All data (JSON)</button><label class="pill mid" style="cursor:pointer">⬆ Import JSON <input type="file" accept=".json,application/json" style="display:none" onchange="impFile(this)"></label></div>
+ <p class="muted">Orders are left out of exports to avoid personal names. Import checks every row and asks before replacing your current history and test data.</p>
+ <div class="two"><div class="box"><b>Restore sample data</b><p class="muted">Replaces everything with the original simulated demonstration data.</p><button class="warn" onclick="reset()">↺ Reset demo</button></div><div class="box"><b>Delete all saved data</b><p class="muted">Erases CanteenIQ's saved data and backups from this browser.</p><button class="warn" onclick="delAll()">🗑 Delete everything</button></div></div></div>`};
+
+/* In-page dialogs (browser prompt/confirm pop-ups are blocked in many previews) */
+let MODAL=null;
+function ask(text,yes){MODAL={kind:"confirm",text,yes,focus:true};render()}
+function modalYes(){const y=MODAL&&MODAL.yes;MODAL=null;render();if(y)y()}
+function modalNo(){MODAL=null;render()}
+function modalH(){if(!MODAL)return"";
+ if(MODAL.kind==="pin")return`<div class="modal" role="dialog" aria-modal="true" aria-labelledby="mt"><div class="card"><h2 id="mt">🔐 Authority sign-in (demo)</h2><p class="muted">Demonstration PIN: <b>${esc(S.pin)}</b>. This check runs in your browser and is not real security.</p><label class="ctl">PIN<input id="pinin" type="password" inputmode="numeric" autocomplete="off" onkeydown="if(event.key==='Enter')pinGo()"></label>${MODAL.err?`<div class="msg err" role="alert">${esc(MODAL.err)}</div>`:""}<div class="row"><button class="go" onclick="pinGo()">Sign in</button><button onclick="modalNo()">Cancel</button></div></div></div>`;
+ return`<div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="mt"><div class="card"><h2 id="mt">Please confirm</h2><p>${esc(MODAL.text)}</p><div class="row"><button class="go" onclick="modalYes()">Yes, continue</button><button id="mno" onclick="modalNo()">Cancel</button></div></div></div>`}
+/* ===== Student ordering: calendar window, class/section, validation, order records ===== */
+const MAXQ=10;
+function validDate(s){return typeof s==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(s)&&isoOf(new Date(+s.slice(0,4),+s.slice(5,7)-1,+s.slice(8)))===s}
+const inWindow=s=>validDate(s)&&s>=todayISO()&&s<=maxISO(); /* re-checked at submit time, using the computer's local date */
+const fmtDate=s=>new Date(+s.slice(0,4),+s.slice(5,7)-1,+s.slice(8)).toLocaleDateString(undefined,{weekday:"short",day:"numeric",month:"long",year:"numeric"});
+const monIdx=s=>+s.slice(0,4)*12+(+s.slice(5,7)-1);
+function calIdx(){const mi=monIdx(todayISO()),xi=monIdx(maxISO()),c=S.cal&&Number.isInteger(S.cal.y)&&Number.isInteger(S.cal.m)?S.cal.y*12+S.cal.m:mi;return{mi,xi,ci:Math.min(xi,Math.max(mi,c))}}
+function calGo(d){const{mi,xi,ci}=calIdx(),n=Math.min(xi,Math.max(mi,ci+d));S.cal={y:Math.floor(n/12),m:n%12};up()}
+function pickDate(s){if(!inWindow(s))return say("err","That date is outside the booking window.");S.od=s;S.msg=null;up()}
+function calKey(e){const el=e.target.closest&&e.target.closest("button.day");if(!el)return;const dm={ArrowLeft:-1,ArrowRight:1,ArrowUp:-7,ArrowDown:7}[e.key];if(!dm)return;e.preventDefault();
+ const p=el.dataset.d.split("-").map(Number),n=isoOf(new Date(p[0],p[1]-1,p[2]+dm));if(!inWindow(n))return;S.cal={y:+n.slice(0,4),m:+n.slice(5,7)-1};S.focusD=n;render()}
+function calHTML(){const t=todayISO(),mx=maxISO(),{mi,xi,ci}=calIdx(),y=Math.floor(ci/12),m=ci%12,first=new Date(y,m,1),lead=(first.getDay()+6)%7,dim=new Date(y,m+1,0).getDate(),sel=S.od,en=[];
+ for(let d=1;d<=dim;d++){const s=`${y}-${pad(m+1)}-${pad(d)}`;if(s>=t&&s<=mx)en.push(s)}
+ const tab=en.includes(sel)?sel:en[0];let cells="";for(let k=0;k<lead;k++)cells+="<span></span>";
+ for(let d=1;d<=dim;d++){const s=`${y}-${pad(m+1)}-${pad(d)}`,ok=en.includes(s);
+  cells+=`<button type="button" id="d-${s}" data-d="${s}" class="day${s===t?" today":""}${s===sel?" sel":""}" ${ok?"":"disabled"} tabindex="${s===tab?0:-1}" aria-pressed="${s===sel}" aria-label="${fmtDate(s)}${s===t?" (today)":""}${ok?"":" (not available)"}" onclick="pickDate('${s}')">${d}</button>`}
+ return`<div class="cal" onkeydown="calKey(event)"><div class="row between"><button type="button" class="sm" onclick="calGo(-1)" ${ci<=mi?"disabled":""} aria-label="Previous month">‹</button><b aria-live="polite" id="calmonth">${first.toLocaleDateString(undefined,{month:"long",year:"numeric"})}</b><button type="button" class="sm" onclick="calGo(1)" ${ci>=xi?"disabled":""} aria-label="Next month">›</button></div><div class="calgrid">${["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map(d=>`<small>${d}</small>`).join("")}${cells}</div></div>`}
+function addq(id,q){const m=S.menu.find(x=>x.id===id);if(!m)return;if(!m.on||m.stock<=0)return say("err",`${m.name} is out of stock and cannot be ordered.`);
+ if(q>m.stock)return say("err",`Only ${m.stock} left of ${m.name}.`);if(q>MAXQ)return say("err",`You can order at most ${MAXQ} of one item at a time.`);
+ S.msg=null;q=Math.floor(q);if(q<=0)delete S.cart[id];else S.cart[id]=q;up()}
+function saveOk(){try{localStorage.setItem(KEY,JSON.stringify(S));saveFail=false;return true}catch(e){saveFail=true;return false}}
+const cleanName=t=>String(t||"").replace(/\s+/g," ").trim();
+const validName=n=>n.length>=2&&n.length<=40&&/^\p{L}[\p{L}\p{M} .'’-]*$/u.test(n);
+function place(){const L=[],nm=cleanName(S.nm),cls=String(S.cls||"").trim(),sec=String(S.sec||"").trim(),slot=String(S.sl||"").trim();
+ for(const id in S.cart){const q=S.cart[id],m=S.menu.find(x=>x.id===id);if(!m)return say("err","An item in your cart no longer exists.");
+  if(!m.on||m.stock<=0)return say("err",`${m.name} is out of stock. Remove it from the cart.`);
+  if(!Number.isInteger(q)||q<=0||q>MAXQ)return say("err",`Quantity must be a whole number from 1 to ${MAXQ}.`);
+  if(q>m.stock)return say("err",`Only ${m.stock} left of ${m.name}.`);
+  if(!Number.isFinite(m.price)||m.price<0)return say("err",`${m.name} has an invalid price.`);
+  L.push({id,name:m.name,q,p:m.price})}
+ if(!L.length)return say("err","Your cart is empty. Only in-stock items can be ordered.");
+ if(!inWindow(S.od))return say("err",`Please choose an order date from ${fmtDate(todayISO())} to ${fmtDate(maxISO())}.`);
+ if(!nm)return say("err","Name is required. Please enter your name.");
+ if(!validName(nm))return say("err","Please enter a valid name: 2 to 40 letters (spaces, full stops, hyphens and apostrophes are allowed).");
+ if(!cls)return say("err","Class is required. Please choose your class.");
+ if(!S.cfg.classes.includes(cls))return say("err","Please choose a class from the list.");
+ if(!sec)return say("err","Section is required. Please choose your section.");
+ if(!S.cfg.sections.includes(sec))return say("err","Please choose a section from the list.");
+ if(!SLOTS.includes(slot))return say("err","Please choose a pickup time: short break or lunch break.");
+ const tot=L.reduce((t,l)=>t+l.q*l.p,0);if(!Number.isFinite(tot)||tot<0)return say("err","The order total is invalid.");
+ const snap=JSON.stringify(S);
+ L.forEach(l=>{S.menu.find(x=>x.id===l.id).stock-=l.q});
+ const o={id:"CIQ-"+S.next++,name:nm,cls,sec,odate:S.od,L,tot,slot,st:"Placed",created:new Date().toISOString()};S.orders.push(o);S.cart={};S.last=o.id;S.msg=null;
+ if(!saveOk()){S=Object.assign(fresh(),JSON.parse(snap));return say("err","The order could NOT be saved to this browser (storage may be full or blocked), so it was not placed. Free some space or export a backup, then try again.")}
+ render()}
+const confirmCard=o=>`<div class="card" role="status"><div class="row between"><h2>✅ Order ${esc(o.id)} saved</h2><button class="sm" onclick="S.last=null;up()">Place another</button></div>${tbl(["Order ID","Name","Order date","Class","Section","Pickup time","Status"],[[esc(o.id),esc(o.name||"-"),esc(fmtDate(o.odate)),esc(o.cls||"-"),esc(o.sec||"-"),esc(o.slot),`<span class="pill ${o.st}">${o.st}</span>`]])}${tbl(["Item","Quantity","Price each","Line total"],o.L.map(l=>[esc(l.name),l.q,"₹"+l.p,"₹"+l.q*l.p]).concat([["<b>Total (demonstration)</b>","","","<b>₹"+o.tot+"</b>"]]))}<p class="muted">Demonstration only: no real payment is collected. Orders are stored only in this browser on this computer and are not shared with other devices or a real canteen.</p></div>`;
+VIEWS.student=function(){if(!inWindow(S.od))S.od=todayISO();if(!SLOTS.includes(S.sl))S.sl="";const avail=m=>m.on&&m.stock>0;
+ for(const id in S.cart){const m=S.menu.find(x=>x.id===id);if(!m||!avail(m))delete S.cart[id]}
+ const ms=S.menu.filter(m=>(S.cat==="All"||m.cat===S.cat)&&m.name.toLowerCase().includes(S.q.toLowerCase())),cl=S.menu.filter(m=>(S.cart[m.id]||0)>0),tot=cl.reduce((t,m)=>t+m.price*S.cart[m.id],0),lo=S.last&&S.orders.find(o=>o.id===S.last),
+ opt=(a,v,ph)=>`<option value="">${ph}</option>`+a.map(x=>`<option ${v===x?"selected":""}>${esc(x)}</option>`).join("");
+ return(lo?confirmCard(lo):"")+`<div class="layout"><section><div class="row" style="margin-bottom:1rem"><input id="q" placeholder="Search menu…" aria-label="Search menu" value="${esc(S.q)}" oninput="S.q=this.value;render()">${["All","Snacks","Meals","Beverages"].map(c=>`<button class="sm ${S.cat===c?"on":""}" onclick="f('cat','${c}')">${c}</button>`).join("")}</div>
+ ${ms.length?"":'<p class="muted">No items match your search.</p>'}<div class="grid">${ms.map(m=>{const ok=avail(m);return`<div class="card ${m.cat}${ok?"":" oos"}"><span class="emoji">${m.emoji}</span><h3>${esc(m.name)}</h3><div class="muted">${esc(m.desc)}</div><div class="row between" style="margin:.5rem 0"><b>₹${m.price}</b><span class="pill ${ok?"stk-in":"stk-out"}">${!m.on?"Out of stock (off menu)":ok?"In stock · "+m.stock+" left":"Out of stock"}</span></div><button class="go" style="width:100%" ${ok&&(S.cart[m.id]||0)<Math.min(m.stock,MAXQ)?"":"disabled"} onclick="addq('${m.id}',${(S.cart[m.id]||0)+1})">${ok?"Add to cart":"Out of stock"}</button></div>`}).join("")}</div>
+ <p class="muted">Demonstration menu and prices. This is not the school's real canteen menu, and stock here is a simulation, not the school's physical stock.</p></section>
+ <aside class="card" style="align-self:start"><h2>🛒 Your order</h2>${cl.length?"":'<p class="muted">Nothing added yet. Only in-stock items can be ordered.</p>'}${cl.map(m=>`<div class="row between" style="margin-bottom:.4rem"><span>${m.emoji} ${esc(m.name)} <span class="muted">₹${m.price} each</span></span><span class="row"><button type="button" class="sm" aria-label="Decrease ${esc(m.name)}" onclick="addq('${m.id}',${S.cart[m.id]-1})">−</button><b>${S.cart[m.id]}</b><button type="button" class="sm" aria-label="Increase ${esc(m.name)}" onclick="addq('${m.id}',${S.cart[m.id]+1})" ${S.cart[m.id]>=Math.min(m.stock,MAXQ)?"disabled":""}>+</button><button type="button" class="sm warn" aria-label="Remove ${esc(m.name)}" onclick="addq('${m.id}',0)">✕</button></span></div>`).join("")}
+ <p><b>Total: ₹${tot}</b> <span class="muted">(demonstration)</span></p>
+ <h3>Order date *</h3><p class="muted">You can book from today (${esc(fmtDate(todayISO()))}) up to ${esc(fmtDate(maxISO()))}: a rolling one-month window.</p>${calHTML()}<p><b>Selected:</b> ${esc(fmtDate(S.od))}</p>
+ <label class="ctl">Your name *<input id="nm" type="text" required aria-required="true" maxlength="40" autocomplete="off" placeholder="First and last name" value="${esc(S.nm||"")}" oninput="S.nm=this.value;save()" onchange="up()"></label>
+ <label class="ctl">Class *<select id="cls" required aria-required="true" onchange="S.cls=this.value;up()">${opt(S.cfg.classes,S.cls,"Select class…")}</select></label>
+ <label class="ctl">Section *<select id="sec" required aria-required="true" onchange="S.sec=this.value;up()">${opt(S.cfg.sections,S.sec,"Select section…")}</select></label>
+ <label class="ctl">Pickup time * <span class="muted">(break times only)</span><select id="slt" required aria-required="true" onchange="S.sl=this.value;up()">${opt(SLOTS,S.sl,"Choose pickup time…")}</select></label>
+ <div class="box muted"><b>Summary</b><br>Name: ${esc(cleanName(S.nm)||"-")}<br>Pickup: ${esc(S.sl||"-")}<br>Date: ${esc(fmtDate(S.od))}<br>Class ${esc(S.cls||"-")}, Section ${esc(S.sec||"-")}<br>Items: ${cl.reduce((t,m)=>t+S.cart[m.id],0)} · Total ₹${tot}</div>
+ ${msgH()}<button class="go" style="width:100%" ${cl.length?"":"disabled"} onclick="place()">Place simulated order</button>
+ <p class="muted">Demonstration only: no real payment is taken. Your name, class and section are saved with the order only in this browser on this computer, and are not shared with other devices. No phone number or other contact details are collected.</p></aside></div>`};
+VIEWS.orders=function(){const m=S.orders.filter(o=>o.id.toLowerCase().includes(S.lk.toLowerCase()));
+ return msgH()+`<div class="card"><div class="row between"><h2>My orders</h2><input id="lk" placeholder="Filter by order ID" aria-label="Filter by order ID" value="${esc(S.lk)}" oninput="S.lk=this.value;render()"></div>${m.length?tbl(["Order","Name","Order date","Class","Section","Items (price each)","Total","Pickup time","Status","Est. wait*"],m.map(o=>{const w=waitFor(o);return[`<b>${esc(o.id)}</b>`,esc(o.name||"-"),esc(fmtDate(o.odate||todayISO())),esc(o.cls||"-"),esc(o.sec||"-"),o.L.map(l=>esc(l.q+"× "+l.name+" @ ₹"+l.p)).join(", "),"₹"+o.tot,esc(o.slot),`<span class="pill ${o.st}">${o.st}</span>`,w===null?"-":"~"+w+" min"]})):'<p class="muted">No orders yet. Place one from the menu.</p>'}<p class="muted">*Estimate = orders ahead × ${S.set.perOrder} min + items × ${S.set.minItem} min. Not a live prediction: no real preparation times are measured. All orders are demonstrations, stored only in this browser on this computer, not shared with other devices.</p></div>`};
+const parseList=t=>[...new Set(String(t).split(",").map(x=>x.trim().replace(/[<>"&]/g,"").slice(0,12)).filter(Boolean))].slice(0,20);
+function saveCfg(){const c=parseList($("cfgC").value),s=parseList($("cfgS").value);if(!c.length||!s.length)return say("err","Class and section lists each need at least one value.");
+ S.cfg={classes:c,sections:s};if(!c.includes(S.cls))S.cls="";if(!s.includes(S.sec))S.sec="";say("good","Order-form options saved.")}
+function restoreMenu(){ask("Restore the demonstration menu? Chocolate becomes available and every other item becomes out of stock. Orders and history are kept.",()=>{S.cart={};S.menu=freshMenu();say("good","Demonstration menu restored: Chocolate in stock, all other items out of stock.")})}
+
+render();
+</script></body></html>
